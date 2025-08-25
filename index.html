@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenttry - Sistema de Controle de Acesso</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">Z</div>
+                <span class="logo-text">Zenttry</span>
+            </div>
+            <div class="nav-tagline">Sistema de Controle de Acesso</div>
+            <button class="sidebar-toggle" onclick="system.toggleSidebar()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon">Z</div>
+                <span class="logo-text">Zenttry</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-item active" onclick="system.showDashboard()">
+                <i class="icon">📊</i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="system.showPeopleManagement()">
+                <i class="icon">👥</i>
+                <span>Gerenciar Pessoas</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="system.showLabManagement()">
+                <i class="icon">🏢</i>
+                <span>Gerenciar LABs</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="system.showAccessLogs()">
+                <i class="icon">📋</i>
+                <span>Logs de Acesso</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="system.showAccessControl()">
+                <i class="icon">🔑</i>
+                <span>Controle de Acesso</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-item" onclick="system.logout()">
+                <i class="icon">🚪</i>
+                <span>Sair</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Bem-vindo ao Zenttry</h1>
+                <p>Faça login para acessar o sistema de controle de acesso</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Use: <strong>admin</strong> / <strong>admin123</strong> para acessar o sistema</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demonstração - Sistema de Controle de Acesso</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .demo-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+        
+        .demo-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #10b981;
+        }
+        
+        .feature-card h3 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+        
+        .demo-actions {
+            text-align: center;
+        }
+        
+        .demo-actions .btn {
+            margin: 10px;
+        }
+        
+        .demo-screenshots {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .screenshot {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>Zenttry - Sistema de Controle de Acesso</h1>
+            <p>Uma solução completa e moderna para gerenciar acessos em laboratórios</p>
+        </div>
+
+        <div class="demo-features">
+            <div class="feature-card">
+                <h3>👥 Gerenciamento de Pessoas</h3>
+                <p>Cadastre, edite e gerencie pessoas com acesso aos LABs. Defina permissões específicas para cada usuário.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🏢 Gerenciamento de LABs</h3>
+                <p>Crie e configure LABs com suas respectivas portas e fechaduras. Organize seu espaço de trabalho.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🔑 Controle de Acesso</h3>
+                <p>Sistema inteligente que permite ou nega entrada baseado em permissões e autenticação.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📊 Logs e Relatórios</h3>
+                <p>Registre e visualize todos os acessos com filtros avançados e histórico completo.</p>
+            </div>
+        </div>
+
+        <div class="demo-actions">
+            <h3>🚀 Experimente o Sistema</h3>
+            <p>Clique no botão abaixo para acessar o sistema completo:</p>
+            <a href="index.html" class="btn btn-primary">Acessar Sistema</a>
+            <a href="README.md" class="btn btn-secondary">Ver Documentação</a>
+        </div>
+
+        <div class="demo-screenshots">
+            <h3>📱 Interface Responsiva</h3>
+            <p>O sistema funciona perfeitamente em todos os dispositivos</p>
+            <div style="margin: 20px 0;">
+                <strong>Credenciais de Acesso:</strong><br>
+                <strong>Usuário:</strong> admin<br>
+                <strong>Senha:</strong> admin123
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+            <h3>💡 Como Funciona</h3>
+            <ol style="text-align: left; line-height: 1.8;">
+                <li><strong>Login:</strong> Acesse com as credenciais fornecidas</li>
+                <li><strong>Dashboard:</strong> Visualize os 4 módulos principais</li>
+                <li><strong>Gerenciar Pessoas:</strong> Cadastre usuários e defina permissões</li>
+                <li><strong>Gerenciar LABs:</strong> Configure laboratórios e portas</li>
+                <li><strong>Controle de Acesso:</strong> Teste o sistema em tempo real</li>
+                <li><strong>Logs:</strong> Acompanhe todos os acessos e tentativas</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
