@@ -1,36 +1,119 @@
-// Sistema de Controle de Acesso para LABs
-class AccessControlSystem {
+// Zenttry - Sistema de Controle de Acesso
+// Versão 2.0 - JavaScript Moderno ES6+
+
+class ZenttrySystem {
     constructor() {
         this.currentUser = null;
-        this.people = JSON.parse(localStorage.getItem('people')) || [];
-        this.labs = JSON.parse(localStorage.getItem('labs')) || [];
-        this.accessLogs = JSON.parse(localStorage.getItem('accessLogs')) || [];
-        this.accessPermissions = JSON.parse(localStorage.getItem('accessPermissions')) || {};
+        this.people = [];
+        this.labs = [];
+        this.accessLogs = [];
+        this.accessPermissions = {};
         
         this.init();
     }
 
-    init() {
-        console.log('Initializing AccessControlSystem...');
-        this.setupEventListeners();
-        this.checkAuth();
-        if (this.currentUser) {
-            this.loadDashboard();
+    async init() {
+        console.log('🚀 Iniciando Zenttry System...');
+        
+        try {
+            await this.loadData();
+            this.setupEventListeners();
+            this.checkAuthentication();
+            this.setupSidebar();
+            
+            console.log('✅ Sistema inicializado com sucesso!');
+        } catch (error) {
+            console.error('❌ Erro ao inicializar sistema:', error);
+            this.showError('Erro ao inicializar o sistema');
         }
-        console.log('Initialization complete');
+    }
+
+    async loadData() {
+        // Carregar dados do localStorage
+        this.people = JSON.parse(localStorage.getItem('zenttry_people')) || [];
+        this.labs = JSON.parse(localStorage.getItem('zenttry_labs')) || [];
+        this.accessLogs = JSON.parse(localStorage.getItem('zenttry_accessLogs')) || [];
+        this.accessPermissions = JSON.parse(localStorage.getItem('zenttry_accessPermissions')) || {};
+        
+        // Dados padrão se não existirem
+        if (this.people.length === 0) {
+            this.people = this.getDefaultPeople();
+            this.saveData('people');
+        }
+        
+        if (this.labs.length === 0) {
+            this.labs = this.getDefaultLabs();
+            this.saveData('labs');
+        }
+    }
+
+    getDefaultPeople() {
+        return [
+            {
+                id: 1,
+                name: 'João Silva',
+                email: 'joao.silva@empresa.com',
+                department: 'TI',
+                role: 'Desenvolvedor',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 2,
+                name: 'Maria Santos',
+                email: 'maria.santos@empresa.com',
+                department: 'RH',
+                role: 'Analista',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            }
+        ];
+    }
+
+    getDefaultLabs() {
+        return [
+            {
+                id: 1,
+                name: 'LAB de Desenvolvimento',
+                location: 'Andar 3 - Sala 301',
+                capacity: 20,
+                equipment: ['Computadores', 'Projetor', 'Quadro'],
+                status: 'active',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 2,
+                name: 'LAB de Testes',
+                location: 'Andar 2 - Sala 205',
+                capacity: 15,
+                equipment: ['Servidores', 'Switches', 'Câmeras'],
+                status: 'active',
+                createdAt: new Date().toISOString()
+            }
+        ];
     }
 
     setupEventListeners() {
+        // Login form
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
 
+        // Sidebar toggle
+        const sidebarToggle = document.querySelector('.sidebar-toggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => this.toggleSidebar());
+        }
+
+        // Modal close
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('close') || e.target.classList.contains('modal')) {
                 this.closeModal();
             }
         });
+
+        // Click outside sidebar
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
             const sidebarToggle = document.querySelector('.sidebar-toggle');
@@ -41,214 +124,233 @@ class AccessControlSystem {
                 this.closeSidebar();
             }
         });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                this.showQuickSearch();
+            }
+            if (e.key === 'Escape') {
+                this.closeModal();
+                this.closeSidebar();
+            }
+        });
     }
 
-    handleLogin(e) {
+    setupSidebar() {
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = item.getAttribute('data-action');
+                if (action) {
+                    this.executeAction(action);
+                }
+            });
+        });
+    }
+
+    executeAction(action) {
+        switch (action) {
+            case 'inicio':
+                this.showDashboard();
+                break;
+            case 'people':
+                this.showPeopleManagement();
+                break;
+            case 'labs':
+                this.showLabManagement();
+                break;
+            case 'logs':
+                this.showAccessLogs();
+                break;
+            case 'access':
+                this.showAccessControl();
+                break;
+            case 'logout':
+                this.logout();
+                break;
+            default:
+                console.warn('Ação não reconhecida:', action);
+        }
+    }
+
+    async handleLogin(e) {
         e.preventDefault();
+        
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-
-        if (username === 'admin' && password === 'admin123') {
-            this.currentUser = { username, role: 'admin' };
-            localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-            this.closeSidebar();
-            this.showDashboard();
-        } else {
-            alert('Usuário ou senha incorretos!');
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Entrando...';
+            
+            // Simular delay de autenticação
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            if (username === 'admin' && password === 'admin123') {
+                this.currentUser = { 
+                    username, 
+                    role: 'admin',
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('zenttry_currentUser', JSON.stringify(this.currentUser));
+                this.showSuccess('Login realizado com sucesso!');
+                this.showDashboard();
+            } else {
+                throw new Error('Usuário ou senha incorretos!');
+            }
+        } catch (error) {
+            this.showError(error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Entrar';
         }
     }
 
-    checkAuth() {
-        const savedUser = localStorage.getItem('currentUser');
-        console.log('Checking auth, savedUser:', savedUser);
+    checkAuthentication() {
+        const savedUser = localStorage.getItem('zenttry_currentUser');
         
         if (savedUser) {
-            this.currentUser = JSON.parse(savedUser);
-            this.closeSidebar();
-            this.showDashboard();
+            try {
+                this.currentUser = JSON.parse(savedUser);
+                this.showDashboard();
+            } catch (error) {
+                console.error('Erro ao carregar usuário:', error);
+                localStorage.removeItem('zenttry_currentUser');
+                this.showLogin();
+            }
         } else {
-            console.log('No user logged in, showing login screen');
-            document.querySelector('.dashboard').style.display = 'none';
-            document.querySelector('.container').style.display = 'flex';
+            this.showLogin();
         }
+    }
+
+    showLogin() {
+        document.querySelector('.dashboard').style.display = 'none';
+        document.querySelector('.container').style.display = 'flex';
+        this.closeSidebar();
     }
 
     showDashboard() {
         document.querySelector('.container').style.display = 'none';
         document.querySelector('.dashboard').style.display = 'block';
-        this.loadDashboard();
-        this.updateActiveSidebarItem(document.querySelector('.sidebar-item[onclick*="showDashboard"]'));
+        
+        this.renderDashboard();
+        this.updateActiveSidebarItem('inicio');
     }
 
-    logout() {
-        this.currentUser = null;
-        localStorage.removeItem('currentUser');
-        document.querySelector('.dashboard').style.display = 'none';
-        document.querySelector('.container').style.display = 'flex';
-        document.getElementById('loginForm').reset();
-        this.closeSidebar();
-    }
-
-    loadDashboard() {
+    renderDashboard() {
         const dashboard = document.querySelector('.dashboard');
         if (!dashboard) return;
 
+        const stats = this.calculateStats();
+        
         dashboard.innerHTML = `
-            <div class="dashboard-header">
-                <div class="logo-container">
-                    <div class="logo-placeholder" style="width: 60px; height: 60px; font-size: 1.5rem; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-family: 'Playfair Display', serif; font-weight: 700;">
-                        Z
-                    </div>
-                    <div class="logo-text" style="font-size: 1.2rem; font-family: 'Playfair Display', serif; font-weight: 600; color: #22c55e;">Zenttry</div>
-                </div>
-                <h1>Sistema de Controle de Acesso</h1>
-                <p>Bem-vindo, ${this.currentUser?.username || 'Usuário'}!</p>
+                    <div class="dashboard-header">
+            <div class="logo-container">
+                <div class="logo-placeholder">Z</div>
+                <div class="logo-text">Zenttry</div>
             </div>
+            <h1>Início</h1>
+            <p>Bem-vindo, ${this.currentUser.username}!</p>
+            <button class="btn btn-danger logout-btn" onclick="zenttry.logout()">Sair</button>
+        </div>
 
             <div class="dashboard-stats">
                 <div class="stat-card">
                     <div class="stat-icon">👥</div>
                     <div class="stat-content">
-                        <h3>${this.people.length}</h3>
+                        <h3>${stats.totalPeople}</h3>
                         <p>Pessoas Cadastradas</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">🏢</div>
                     <div class="stat-content">
-                        <h3>${this.labs.length}</h3>
-                        <p>LABs Ativos</p>
+                        <h3>${stats.totalLabs}</h3>
+                        <p>LABs Disponíveis</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔑</div>
+                    <div class="stat-content">
+                        <h3>${stats.totalPermissions}</h3>
+                        <p>Permissões Ativas</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
                     <div class="stat-content">
-                        <h3>${this.accessLogs.length}</h3>
-                        <p>Total de Acessos</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-content">
-                        <h3>${this.accessLogs.filter(log => log.status === 'authorized').length}</h3>
-                        <p>Acessos Autorizados</p>
+                        <h3>${stats.totalLogs}</h3>
+                        <p>Logs de Acesso</p>
                     </div>
                 </div>
             </div>
 
             <div class="dashboard-chart">
-                <h3>📈 Gráfico de Acessos - Últimos 7 Dias</h3>
-                <div id="accessChart"></div>
+                <h3>Acesso por LAB - Últimos 7 dias</h3>
+                <div class="chart-container">
+                    ${this.renderAccessChart()}
+                </div>
             </div>
 
             <div class="dashboard-actions">
                 <div class="action-grid">
                     <div class="action-card">
                         <h3>👥 Gerenciar Pessoas</h3>
-                        <p>Cadastre, edite e gerencie pessoas que terão acesso aos LABs</p>
-                        <button class="btn btn-primary" onclick="system.showPeopleManagement()">
+                        <p>Adicione, edite ou remova pessoas do sistema</p>
+                        <button class="btn btn-primary" onclick="zenttry.showPeopleManagement()">
                             Gerenciar Pessoas
                         </button>
                     </div>
-
                     <div class="action-card">
                         <h3>🏢 Gerenciar LABs</h3>
-                        <p>Crie e configure LABs com suas respectivas portas e fechaduras</p>
-                        <button class="btn btn-primary" onclick="system.showLabManagement()">
+                        <p>Configure e gerencie os laboratórios disponíveis</p>
+                        <button class="btn btn-primary" onclick="zenttry.showLabManagement()">
                             Gerenciar LABs
                         </button>
                     </div>
-
-                    <div class="action-card">
-                        <h3>📊 Logs de Acesso</h3>
-                        <p>Visualize todos os registros de acesso aos LABs</p>
-                        <button class="btn btn-primary" onclick="system.showAccessLogs()">
-                            Ver Logs
-                        </button>
-                    </div>
-
                     <div class="action-card">
                         <h3>🔑 Controle de Acesso</h3>
-                        <p>Teste o sistema de controle de acesso em tempo real</p>
-                        <button class="btn btn-primary" onclick="system.showAccessControl()">
+                        <p>Configure permissões e controle de acesso</p>
+                        <button class="btn btn-primary" onclick="zenttry.showAccessControl()">
                             Controle de Acesso
                         </button>
                     </div>
                 </div>
             </div>
         `;
-        setTimeout(() => this.renderChart(), 100);
-    }
-    toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('open');
     }
 
-    closeSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.remove('open');
+    calculateStats() {
+        return {
+            totalPeople: this.people.length,
+            totalLabs: this.labs.length,
+            totalPermissions: Object.keys(this.accessPermissions).length,
+            totalLogs: this.accessLogs.length
+        };
     }
 
-    updateActiveSidebarItem(activeItem) {
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        if (activeItem) {
-            activeItem.classList.add('active');
-        }
-    }
-
-    generateChartData() {
-        const last7Days = [];
-        const authorizedData = [];
-        const deniedData = [];
+    renderAccessChart() {
+        // Simular dados de acesso dos últimos 7 dias
+        const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+        const authorized = [12, 19, 15, 22, 18, 8, 5];
+        const denied = [2, 1, 3, 1, 2, 1, 0];
         
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            last7Days.push(date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
-            
-            const dayStart = new Date(date);
-            dayStart.setHours(0, 0, 0, 0);
-            const dayEnd = new Date(date);
-            dayEnd.setHours(23, 59, 59, 999);
-            
-            const dayLogs = this.accessLogs.filter(log => {
-                const logDate = new Date(log.timestamp);
-                return logDate >= dayStart && logDate <= dayEnd;
-            });
-            
-            const authorized = dayLogs.filter(log => log.status === 'authorized').length;
-            const denied = dayLogs.filter(log => log.status === 'denied').length;
-            
-            authorizedData.push(authorized);
-            deniedData.push(denied);
-        }
+        let chartHTML = '<div class="chart-bars">';
         
-        return { last7Days, authorizedData, deniedData };
-    }
-
-    renderChart() {
-        const chartData = this.generateChartData();
-        const chartContainer = document.getElementById('accessChart');
-        
-        if (!chartContainer) return;
-        
-        const maxValue = Math.max(...chartData.authorizedData, ...chartData.deniedData);
-        const chartHeight = 200;
-        
-        let chartHTML = '<div class="chart-container">';
-        chartHTML += '<div class="chart-bars">';
-        
-        chartData.last7Days.forEach((day, index) => {
-            const authorizedHeight = maxValue > 0 ? (chartData.authorizedData[index] / maxValue) * chartHeight : 0;
-            const deniedHeight = maxValue > 0 ? (chartData.deniedData[index] / maxValue) * chartHeight : 0;
+        days.forEach((day, index) => {
+            const authHeight = (authorized[index] / Math.max(...authorized)) * 200;
+            const deniedHeight = (denied[index] / Math.max(...denied)) * 200;
             
             chartHTML += `
                 <div class="chart-column">
                     <div class="chart-bar-group">
-                        <div class="chart-bar authorized" style="height: ${authorizedHeight}px" title="${chartData.authorizedData[index]} autorizados"></div>
-                        <div class="chart-bar denied" style="height: ${deniedHeight}px" title="${chartData.deniedData[index]} negados"></div>
+                        <div class="chart-bar authorized" style="height: ${authHeight}px;" title="Autorizado: ${authorized[index]}"></div>
+                        <div class="chart-bar denied" style="height: ${deniedHeight}px;" title="Negado: ${denied[index]}"></div>
                     </div>
                     <div class="chart-label">${day}</div>
                 </div>
@@ -256,660 +358,499 @@ class AccessControlSystem {
         });
         
         chartHTML += '</div>';
-        chartHTML += '<div class="chart-legend">';
-        chartHTML += '<div class="legend-item"><span class="legend-color authorized"></span> Autorizados</div>';
-        chartHTML += '<div class="legend-item"><span class="legend-color denied"></span> Negados</div>';
-        chartHTML += '</div>';
-        chartHTML += '</div>';
-        
-        chartContainer.innerHTML = chartHTML;
-    }
-    showModal(title, content) {
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>${title}</h2>
-                    <span class="close">&times;</span>
+        chartHTML += `
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color authorized"></div>
+                    <span>Autorizado</span>
                 </div>
-                ${content}
+                <div class="legend-item">
+                    <div class="legend-color denied"></div>
+                    <span>Negado</span>
+                </div>
             </div>
         `;
-        document.body.appendChild(modal);
-        modal.style.display = 'block';
+        
+        return chartHTML;
+    }
+
+    showPeopleManagement() {
+        this.renderPeopleManagement();
+        this.updateActiveSidebarItem('people');
+    }
+
+    renderPeopleManagement() {
+        const dashboard = document.querySelector('.dashboard');
+        if (!dashboard) return;
+
+        dashboard.innerHTML = `
+                    <div class="dashboard-header">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">👥 Gerenciar Pessoas</h1>
+                <button class="close-btn" onclick="zenttry.showDashboard()">✕</button>
+            </div>
+            <p>Gerencie as pessoas cadastradas no sistema</p>
+            <button class="btn btn-primary" onclick="zenttry.showAddPersonModal()">
+                + Adicionar Pessoa
+            </button>
+        </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Lista de Pessoas</h3>
+                    <div class="table-actions">
+                        <input type="text" placeholder="Buscar pessoas..." onkeyup="zenttry.filterPeople(this.value)">
+                        <button class="btn btn-secondary" onclick="zenttry.exportPeople()">Exportar</button>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Departamento</th>
+                            <th>Cargo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="peopleTableBody">
+                        ${this.renderPeopleTable()}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    renderPeopleTable() {
+        return this.people.map(person => `
+            <tr>
+                <td>${person.name}</td>
+                <td>${person.email}</td>
+                <td>${person.department}</td>
+                <td>${person.role}</td>
+                <td>
+                    <span class="status-${person.status}">${person.status}</span>
+                </td>
+                <td class="action-buttons">
+                    <button class="btn btn-sm btn-warning" onclick="zenttry.editPerson(${person.id})">
+                        Editar
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="zenttry.deletePerson(${person.id})">
+                        Excluir
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    showLabManagement() {
+        this.renderLabManagement();
+        this.updateActiveSidebarItem('labs');
+    }
+
+    renderLabManagement() {
+        const dashboard = document.querySelector('.dashboard');
+        if (!dashboard) return;
+
+        dashboard.innerHTML = `
+                    <div class="dashboard-header">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">🏢 Gerenciar LABs</h1>
+                <button class="close-btn" onclick="zenttry.showDashboard()">✕</button>
+            </div>
+            <p>Gerencie os laboratórios disponíveis no sistema</p>
+            <button class="btn btn-primary" onclick="zenttry.showAddLabModal()">
+                + Adicionar LAB
+            </button>
+        </div>
+
+            <div class="dashboard-grid">
+                ${this.labs.map(lab => `
+                    <div class="dashboard-card">
+                        <h3>${lab.name}</h3>
+                        <p><strong>Localização:</strong> ${lab.location}</p>
+                        <p><strong>Capacidade:</strong> ${lab.capacity} pessoas</p>
+                        <p><strong>Equipamentos:</strong> ${lab.equipment.join(', ')}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="status-${lab.status}">${lab.status}</span>
+                        </p>
+                        <div class="dashboard-card">
+                            <button class="btn btn-warning" onclick="zenttry.editLab(${lab.id})">
+                                Editar
+                            </button>
+                            <button class="btn btn-danger" onclick="zenttry.deleteLab(${lab.id})">
+                                Excluir
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    showAccessLogs() {
+        this.renderAccessLogs();
+        this.updateActiveSidebarItem('logs');
+    }
+
+    renderAccessLogs() {
+        const dashboard = document.querySelector('.dashboard');
+        if (!dashboard) return;
+
+        dashboard.innerHTML = `
+                    <div class="dashboard-header">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">📋 Logs de Acesso</h1>
+                <button class="close-btn" onclick="zenttry.showDashboard()">✕</button>
+            </div>
+            <p>Visualize o histórico de acessos ao sistema</p>
+        </div>
+
+            <div class="table-container">
+                <div class="log-filters">
+                    <select onchange="zenttry.filterLogsByStatus(this.value)">
+                        <option value="">Todos os status</option>
+                        <option value="authorized">Autorizado</option>
+                        <option value="denied">Negado</option>
+                    </select>
+                    <input type="date" onchange="zenttry.filterLogsByDate(this.value)">
+                    <input type="text" placeholder="Buscar por pessoa..." onkeyup="zenttry.filterLogsByPerson(this.value)">
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Pessoa</th>
+                            <th>LAB</th>
+                            <th>Status</th>
+                            <th>Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${this.renderLogsTable()}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    renderLogsTable() {
+        return this.accessLogs.slice(-20).map(log => `
+            <tr>
+                <td>${new Date(log.timestamp).toLocaleString('pt-BR')}</td>
+                <td>${log.personName}</td>
+                <td>${log.labName}</td>
+                <td>
+                    <span class="status-${log.status}">${log.status}</span>
+                </td>
+                <td>${log.details}</td>
+            </tr>
+        `).join('');
+    }
+
+    showAccessControl() {
+        this.renderAccessControl();
+        this.updateActiveSidebarItem('access');
+    }
+
+    renderAccessControl() {
+        const dashboard = document.querySelector('.dashboard');
+        if (!dashboard) return;
+
+        dashboard.innerHTML = `
+                    <div class="dashboard-header">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 20px;">
+                <h1 style="margin: 0;">🔑 Controle de Acesso</h1>
+                <button class="close-btn" onclick="zenttry.showDashboard()">✕</button>
+            </div>
+            <p>Configure permissões de acesso aos laboratórios</p>
+        </div>
+
+            <div class="access-grid">
+                ${this.people.map(person => `
+                    <div class="access-item">
+                        <h4>👤 ${person.name}</h4>
+                        <p><strong>Departamento:</strong> ${person.department}</p>
+                        <p><strong>Cargo:</strong> ${person.role}</p>
+                        
+                        <div class="access-toggle">
+                            <span>Permitir acesso:</span>
+                            <label class="switch">
+                                <input type="checkbox" 
+                                       ${this.hasAccess(person.id) ? 'checked' : ''}
+                                       onchange="zenttry.toggleAccess(${person.id}, this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    hasAccess(personId) {
+        return this.accessPermissions[personId] === true;
+    }
+
+    toggleAccess(personId, hasAccess) {
+        this.accessPermissions[personId] = hasAccess;
+        this.saveData('accessPermissions');
+        
+        const status = hasAccess ? 'permitido' : 'negado';
+        this.showSuccess(`Acesso ${status} para ${this.getPersonById(personId)?.name}`);
+    }
+
+    getPersonById(id) {
+        return this.people.find(p => p.id === id);
+    }
+
+    updateActiveSidebarItem(activeAction) {
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        const activeItem = document.querySelector(`[data-action="${activeAction}"]`);
+        if (activeItem) {
+            activeItem.classList.add('active');
+        }
+    }
+
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('open');
+        }
+    }
+
+    closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.remove('open');
+        }
     }
 
     closeModal() {
         const modal = document.querySelector('.modal');
         if (modal) {
-            modal.remove();
+            modal.style.display = 'none';
         }
     }
-    showPeopleManagement() {
-        this.updateActiveSidebarItem(document.querySelector('.sidebar-item[onclick*="showPeopleManagement"]'));
-        
-        const content = `
-            <div class="table-header">
-                <h3>👥 Gerenciamento de Pessoas</h3>
-                <div class="table-actions">
-                    <button class="btn btn-success" onclick="system.showPersonForm()">
-                        ➕ Adicionar Pessoa
-                    </button>
-                </div>
-            </div>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Documento</th>
-                            <th>Senha/PIN</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${this.people.map(person => `
-                            <tr>
-                                <td>${person.name}</td>
-                                <td>${person.document}</td>
-                                <td>${person.password}</td>
-                                <td class="action-buttons">
-                                    <button class="btn btn-warning btn-sm" onclick="system.editPerson('${person.id}')">
-                                        ✏️ Editar
-                                    </button>
-                                    <button class="btn btn-primary btn-sm" onclick="system.managePersonAccess('${person.id}')">
-                                        🔑 Acessos
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" onclick="system.deletePerson('${person.id}')">
-                                        🗑️ Excluir
-                                    </button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-        this.showModal('Gerenciamento de Pessoas', content);
+
+    logout() {
+        this.currentUser = null;
+        localStorage.removeItem('zenttry_currentUser');
+        this.showSuccess('Logout realizado com sucesso!');
+        this.showLogin();
     }
 
-    showPersonForm(personId = null) {
-        const person = personId ? this.people.find(p => p.id === personId) : null;
-        const isEdit = !!person;
-        
-        const content = `
-            <form id="personForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="personName">Nome Completo</label>
-                        <input type="text" id="personName" value="${person?.name || ''}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="personDocument">Documento/ID</label>
-                        <input type="text" id="personDocument" value="${person?.document || ''}" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="personPassword">Senha/PIN</label>
-                    <input type="password" id="personPassword" value="${person?.password || ''}" required>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="system.closeModal()">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-success">
-                        ${isEdit ? 'Atualizar' : 'Cadastrar'}
-                    </button>
-                </div>
-            </form>
-        `;
-        
-        this.showModal(isEdit ? 'Editar Pessoa' : 'Nova Pessoa', content);
-        
-        document.getElementById('personForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.savePerson(personId);
-        });
-    }
-
-    savePerson(personId = null) {
-        const name = document.getElementById('personName').value;
-        const document = document.getElementById('personDocument').value;
-        const password = document.getElementById('personPassword').value;
-
-        if (personId) {
-            const index = this.people.findIndex(p => p.id === personId);
-            if (index !== -1) {
-                this.people[index] = { ...this.people[index], name, document, password };
+    saveData(type) {
+        try {
+            switch (type) {
+                case 'people':
+                    localStorage.setItem('zenttry_people', JSON.stringify(this.people));
+                    break;
+                case 'labs':
+                    localStorage.setItem('zenttry_labs', JSON.stringify(this.labs));
+                    break;
+                case 'accessLogs':
+                    localStorage.setItem('zenttry_accessLogs', JSON.stringify(this.accessLogs));
+                    break;
+                case 'accessPermissions':
+                    localStorage.setItem('zenttry_accessPermissions', JSON.stringify(this.accessPermissions));
+                    break;
             }
-        } else {
-            const newPerson = {
-                id: Date.now().toString(),
-                name,
-                document,
-                password
-            };
-            this.people.push(newPerson);
+        } catch (error) {
+            console.error('Erro ao salvar dados:', error);
+            this.showError('Erro ao salvar dados');
         }
-
-        this.saveData();
-        this.closeModal();
-        this.showPeopleManagement();
     }
 
-    editPerson(personId) {
-        this.showPersonForm(personId);
+    showSuccess(message) {
+        this.showNotification(message, 'success');
     }
 
-    deletePerson(personId) {
+    showError(message) {
+        this.showNotification(message, 'error');
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    showQuickSearch() {
+        // Implementar busca rápida
+        console.log('Busca rápida ativada');
+    }
+
+    // Funções para modais (placeholder)
+    showAddPersonModal() {
+        this.showError('Funcionalidade em desenvolvimento');
+    }
+
+    showAddLabModal() {
+        this.showError('Funcionalidade em desenvolvimento');
+    }
+
+    editPerson(id) {
+        this.showError('Funcionalidade em desenvolvimento');
+    }
+
+    deletePerson(id) {
         if (confirm('Tem certeza que deseja excluir esta pessoa?')) {
-            this.people = this.people.filter(p => p.id !== personId);
-            this.saveData();
+            this.people = this.people.filter(p => p.id !== id);
+            this.saveData('people');
+            this.showSuccess('Pessoa excluída com sucesso!');
             this.showPeopleManagement();
         }
     }
 
-    managePersonAccess(personId) {
-        const person = this.people.find(p => p.id === personId);
-        if (!person) return;
-
-        const content = `
-            <h3>Gerenciar Acessos: ${person.name}</h3>
-            <p>Configure quais LABs esta pessoa pode acessar:</p>
-            
-            <div class="access-grid">
-                ${this.labs.map(lab => {
-                    const hasAccess = this.accessPermissions[personId]?.[lab.id] || false;
-                    return `
-                        <div class="access-item">
-                            <h4>🏢 ${lab.name}</h4>
-                            <p>Porta: ${lab.door}</p>
-                            <div class="access-toggle">
-                                <label class="switch">
-                                    <input type="checkbox" ${hasAccess ? 'checked' : ''} 
-                                           onchange="system.toggleAccess('${personId}', '${lab.id}', this.checked)">
-                                    <span class="slider"></span>
-                                </label>
-                                <span>${hasAccess ? 'Acesso Permitido' : 'Acesso Negado'}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-            
-            <div class="form-actions">
-                <button class="btn btn-secondary" onclick="system.closeModal()">
-                    Fechar
-                </button>
-            </div>
-        `;
-        
-        this.showModal(`Gerenciar Acessos - ${person.name}`, content);
+    editLab(id) {
+        this.showError('Funcionalidade em desenvolvimento');
     }
 
-    toggleAccess(personId, labId, hasAccess) {
-        if (!this.accessPermissions[personId]) {
-            this.accessPermissions[personId] = {};
-        }
-        this.accessPermissions[personId][labId] = hasAccess;
-        this.saveData();
-    }
-    showLabManagement() {
-        this.updateActiveSidebarItem(document.querySelector('.sidebar-item[onclick*="showLabManagement"]'));
-        
-        const content = `
-            <div class="table-actions">
-                <button class="btn btn-success" onclick="system.showLabForm()">
-                    ➕ Adicionar LAB
-                </button>
-            </div>
-            
-            <div class="table-container">
-                <div class="table-header">
-                    <h3>LABs Cadastrados</h3>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome do LAB</th>
-                            <th>Porta/Fechadura</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${this.labs.map(lab => `
-                            <tr>
-                                <td>${lab.name}</td>
-                                <td>${lab.door}</td>
-                                <td class="action-buttons">
-                                    <button class="btn btn-warning btn-sm" onclick="system.editLab('${lab.id}')">
-                                        ✏️ Editar
-                                    </button>
-                                    <button class="btn btn-primary btn-sm" onclick="system.showLabLogs('${lab.id}')">
-                                        📊 Logs
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" onclick="system.deleteLab('${lab.id}')">
-                                        🗑️ Excluir
-                                    </button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-        this.showModal('Gerenciamento de LABs', content);
-    }
-
-    showLabForm(labId = null) {
-        const lab = labId ? this.labs.find(l => l.id === labId) : null;
-        const isEdit = !!lab;
-        
-        const content = `
-            <form id="labForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="labName">Nome do LAB</label>
-                        <input type="text" id="labName" value="${lab?.name || ''}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="labDoor">Porta/Fechadura</label>
-                        <input type="text" id="labDoor" value="${lab?.door || ''}" required>
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="system.closeModal()">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-success">
-                        ${isEdit ? 'Atualizar' : 'Cadastrar'}
-                    </button>
-                </div>
-            </form>
-        `;
-        
-        this.showModal(isEdit ? 'Editar LAB' : 'Novo LAB', content);
-        
-        document.getElementById('labForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.saveLab(labId);
-        });
-    }
-
-    saveLab(labId = null) {
-        const name = document.getElementById('labName').value;
-        const door = document.getElementById('labDoor').value;
-
-        if (labId) {
-            const index = this.labs.findIndex(l => l.id === labId);
-            if (index !== -1) {
-                this.labs[index] = { ...this.labs[index], name, door };
-            }
-        } else {
-            const newLab = {
-                id: Date.now().toString(),
-                name,
-                door
-            };
-            this.labs.push(newLab);
-        }
-
-        this.saveData();
-        this.closeModal();
-        this.showLabManagement();
-    }
-
-    editLab(labId) {
-        this.showLabForm(labId);
-    }
-
-    deleteLab(labId) {
+    deleteLab(id) {
         if (confirm('Tem certeza que deseja excluir este LAB?')) {
-            this.labs = this.labs.filter(l => l.id !== labId);
-            this.saveData();
+            this.labs = this.labs.filter(l => l.id !== id);
+            this.saveData('labs');
+            this.showSuccess('LAB excluído com sucesso!');
             this.showLabManagement();
         }
     }
 
-    showLabLogs(labId) {
-        const lab = this.labs.find(l => l.id === labId);
-        const labLogs = this.accessLogs.filter(log => log.labId === labId);
+    // Métodos auxiliares para filtros
+    filterPeople(searchTerm) {
+        const tbody = document.getElementById('peopleTableBody');
+        if (!tbody) return;
         
-        const content = `
-            <h3>Logs de Acesso: ${lab.name}</h3>
-            <p>Porta: ${lab.door}</p>
-            
-            <div class="log-filters">
-                <select id="personFilter" onchange="system.filterLogs()">
-                    <option value="">Todas as pessoas</option>
-                    ${this.people.map(person => `
-                        <option value="${person.id}">${person.name}</option>
-                    `).join('')}
-                </select>
-                
-                <select id="statusFilter" onchange="system.filterLogs()">
-                    <option value="">Todos os status</option>
-                    <option value="authorized">Autorizado</option>
-                    <option value="denied">Negado</option>
-                </select>
-                
-                <input type="date" id="dateFilter" onchange="system.filterLogs()">
-            </div>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Pessoa</th>
-                            <th>Data/Hora</th>
-                            <th>Status</th>
-                            <th>Detalhes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logsTableBody">
-                        ${this.renderLogsTable(labLogs)}
-                    </tbody>
-                </table>
-            </div>
-        `;
-        
-        this.showModal(`Logs de Acesso - ${lab.name}`, content);
+        const rows = tbody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            const match = text.includes(searchTerm.toLowerCase());
+            row.style.display = match ? '' : 'none';
+        });
     }
 
-    filterLogs() {
-        const personFilter = document.getElementById('personFilter').value;
-        const statusFilter = document.getElementById('statusFilter').value;
-        const dateFilter = document.getElementById('dateFilter').value;
+    filterLogsByStatus(status) {
+        // Implementar filtro por status
+        console.log('Filtrando logs por status:', status);
+    }
+
+    filterLogsByDate(date) {
+        // Implementar filtro por data
+        console.log('Filtrando logs por data:', date);
+    }
+
+    filterLogsByPerson(searchTerm) {
+        // Implementar filtro por pessoa
+        console.log('Filtrando logs por pessoa:', searchTerm);
+    }
+
+    // Métodos para exportação
+    exportPeople() {
+        const csv = this.convertToCSV(this.people);
+        this.downloadCSV(csv, 'pessoas_zenttry.csv');
+    }
+
+    convertToCSV(data) {
+        if (data.length === 0) return '';
         
-        let filteredLogs = this.accessLogs;
+        const headers = Object.keys(data[0]);
+        const csvRows = [headers.join(',')];
         
-        if (personFilter) {
-            filteredLogs = filteredLogs.filter(log => log.personId === personFilter);
-        }
-        
-        if (statusFilter) {
-            filteredLogs = filteredLogs.filter(log => log.status === statusFilter);
-        }
-        
-        if (dateFilter) {
-            const filterDate = new Date(dateFilter);
-            filteredLogs = filteredLogs.filter(log => {
-                const logDate = new Date(log.timestamp);
-                return logDate.toDateString() === filterDate.toDateString();
+        data.forEach(row => {
+            const values = headers.map(header => {
+                const value = row[header];
+                return typeof value === 'string' ? `"${value}"` : value;
             });
-        }
+            csvRows.push(values.join(','));
+        });
         
-        document.getElementById('logsTableBody').innerHTML = this.renderLogsTable(filteredLogs);
+        return csvRows.join('\n');
     }
 
-    renderLogsTable(logs) {
-        return logs.map(log => {
-            const person = this.people.find(p => p.id === log.personId);
-            const lab = this.labs.find(l => l.id === log.labId);
-            const statusClass = log.status === 'authorized' ? 'status-authorized' : 'status-denied';
-            const statusText = log.status === 'authorized' ? '✅ Autorizado' : '❌ Negado';
-            
-            return `
-                <tr>
-                    <td>${person?.name || 'N/A'}</td>
-                    <td>${new Date(log.timestamp).toLocaleString('pt-BR')}</td>
-                    <td class="${statusClass}">${statusText}</td>
-                    <td>${log.details || ''}</td>
-                </tr>
-            `;
-        }).join('') || '<tr><td colspan="4">Nenhum log encontrado</td></tr>';
-    }
-
-    // Access Control
-    showAccessControl() {
-        this.updateActiveSidebarItem(document.querySelector('.sidebar-item[onclick*="showAccessControl"]'));
+    downloadCSV(csv, filename) {
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
         
-        const content = `
-            <h3>🔑 Controle de Acesso em Tempo Real</h3>
-            <p>Teste o sistema de controle de acesso:</p>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="accessPerson">Pessoa</label>
-                    <select id="accessPerson" required>
-                        <option value="">Selecione uma pessoa</option>
-                        ${this.people.map(person => `
-                            <option value="${person.id}">${person.name} (${person.document})</option>
-                        `).join('')}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="accessLab">LAB</label>
-                    <select id="accessLab" required>
-                        <option value="">Selecione um LAB</option>
-                        ${this.labs.map(lab => `
-                            <option value="${lab.id}">${lab.name} (${lab.door})</option>
-                        `).join('')}
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="accessPassword">Senha/PIN</label>
-                <input type="password" id="accessPassword" placeholder="Digite a senha da pessoa" required>
-            </div>
-            
-            <div class="form-actions">
-                <button class="btn btn-secondary" onclick="system.closeModal()">
-                    Cancelar
-                </button>
-                <button class="btn btn-primary" onclick="system.processAccess()">
-                    🔓 Tentar Acesso
-                </button>
-            </div>
-            
-            <div id="accessResult" style="margin-top: 20px; padding: 15px; border-radius: 10px; display: none;"></div>
-        `;
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
         
-        this.showModal('Controle de Acesso', content);
-    }
-
-    processAccess() {
-        const personId = document.getElementById('accessPerson').value;
-        const labId = document.getElementById('accessLab').value;
-        const password = document.getElementById('accessPassword').value;
-        
-        if (!personId || !labId || !password) {
-            alert('Por favor, preencha todos os campos!');
-            return;
-        }
-        
-        const person = this.people.find(p => p.id === personId);
-        const lab = this.labs.find(l => l.id === labId);
-        
-        if (!person || !lab) {
-            alert('Pessoa ou LAB não encontrado!');
-            return;
-        }
-        
-        // Verificar senha
-        if (person.password !== password) {
-            this.recordAccess(personId, labId, 'denied', 'Senha incorreta');
-            this.showAccessResult('❌ Acesso Negado - Senha incorreta', 'error');
-            return;
-        }
-        
-        // Verificar permissão
-        const hasPermission = this.accessPermissions[personId]?.[labId];
-        if (!hasPermission) {
-            this.recordAccess(personId, labId, 'denied', 'Sem permissão para este LAB');
-            this.showAccessResult('❌ Acesso Negado - Sem permissão para este LAB', 'error');
-            return;
-        }
-        
-        // Acesso autorizado
-        this.recordAccess(personId, labId, 'authorized', 'Acesso permitido');
-        this.showAccessResult('✅ Acesso Autorizado - Bem-vindo ao LAB!', 'success');
-    }
-
-    showAccessResult(message, type) {
-        const resultDiv = document.getElementById('accessResult');
-        resultDiv.style.display = 'block';
-        resultDiv.style.background = type === 'success' ? '#d4edda' : '#f8d7da';
-        resultDiv.style.color = type === 'success' ? '#155724' : '#721c24';
-        resultDiv.style.border = `1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}`;
-        resultDiv.innerHTML = `<strong>${message}</strong>`;
-    }
-
-    recordAccess(personId, labId, status, details) {
-        const log = {
-            id: Date.now().toString(),
-            personId,
-            labId,
-            status,
-            details,
-            timestamp: new Date().toISOString()
-        };
-        
-        this.accessLogs.push(log);
-        this.saveData();
-    }
-
-    // Show Access Logs (Dashboard function)
-    showAccessLogs() {
-        this.updateActiveSidebarItem(document.querySelector('.sidebar-item[onclick*="showAccessLogs"]'));
-        
-        const content = `
-            <h3>📊 Logs de Acesso - Sistema Completo</h3>
-            <p>Visualize todos os registros de acesso com filtros avançados:</p>
-            
-            <div class="log-filters">
-                <select id="personFilter" onchange="system.filterAllLogs()">
-                    <option value="">Todas as pessoas</option>
-                    ${this.people.map(person => `
-                        <option value="${person.id}">${person.name}</option>
-                    `).join('')}
-                </select>
-                
-                <select id="statusFilter" onchange="system.filterAllLogs()">
-                    <option value="">Todos os status</option>
-                    <option value="authorized">Autorizado</option>
-                    <option value="denied">Negado</option>
-                </select>
-                
-                <input type="date" id="dateFilter" onchange="system.filterAllLogs()">
-            </div>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Pessoa</th>
-                            <th>LAB</th>
-                            <th>Data/Hora</th>
-                            <th>Status</th>
-                            <th>Detalhes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="allLogsTableBody">
-                        ${this.renderAllLogsTable(this.accessLogs)}
-                    </tbody>
-                </table>
-            </div>
-        `;
-        
-        this.showModal('Logs de Acesso - Sistema Completo', content);
-    }
-
-    filterAllLogs() {
-        const personFilter = document.getElementById('personFilter').value;
-        const statusFilter = document.getElementById('statusFilter').value;
-        const dateFilter = document.getElementById('dateFilter').value;
-        
-        let filteredLogs = this.accessLogs;
-        
-        if (personFilter) {
-            filteredLogs = filteredLogs.filter(log => log.personId === personFilter);
-        }
-        
-        if (statusFilter) {
-            filteredLogs = filteredLogs.filter(log => log.status === statusFilter);
-        }
-        
-        if (dateFilter) {
-            const filterDate = new Date(dateFilter);
-            filteredLogs = filteredLogs.filter(log => {
-                const logDate = new Date(log.timestamp);
-                return logDate.toDateString() === filterDate.toDateString();
-            });
-        }
-        
-        document.getElementById('allLogsTableBody').innerHTML = this.renderAllLogsTable(filteredLogs);
-    }
-
-    renderAllLogsTable(logs) {
-        return logs.map(log => {
-            const person = this.people.find(p => p.id === log.personId);
-            const lab = this.labs.find(l => l.id === log.labId);
-            const statusClass = log.status === 'authorized' ? 'status-authorized' : 'status-denied';
-            const statusText = log.status === 'authorized' ? '✅ Autorizado' : '❌ Negado';
-            
-            return `
-                <tr>
-                    <td>${person?.name || 'N/A'}</td>
-                    <td>${lab?.name || 'N/A'}</td>
-                    <td>${new Date(log.timestamp).toLocaleString('pt-BR')}</td>
-                    <td class="${statusClass}">${statusText}</td>
-                    <td>${log.details || ''}</td>
-                </tr>
-            `;
-        }).join('') || '<tr><td colspan="5">Nenhum log encontrado</td></tr>';
-    }
-
-    // Data Management
-    saveData() {
-        localStorage.setItem('people', JSON.stringify(this.people));
-        localStorage.setItem('labs', JSON.stringify(this.labs));
-        localStorage.setItem('accessLogs', JSON.stringify(this.accessLogs));
-        localStorage.setItem('accessPermissions', JSON.stringify(this.accessPermissions));
-    }
-
-    // Initialize with sample data if empty
-    initializeSampleData() {
-        if (this.people.length === 0) {
-            this.people = [
-                { id: '1', name: 'João Silva', document: '123.456.789-00', password: '1234' },
-                { id: '2', name: 'Maria Santos', document: '987.654.321-00', password: '5678' },
-                { id: '3', name: 'Pedro Costa', document: '456.789.123-00', password: '9012' }
-            ];
-        }
-        
-        if (this.labs.length === 0) {
-            this.labs = [
-                { id: '1', name: 'LAB de Informática', door: 'Porta A-101' },
-                { id: '2', name: 'LAB de Eletrônica', door: 'Porta B-205' },
-                { id: '3', name: 'LAB de Mecatrônica', door: 'Porta C-310' }
-            ];
-        }
-        
-        if (Object.keys(this.accessPermissions).length === 0) {
-            this.accessPermissions = {
-                '1': { '1': true, '2': true, '3': false },
-                '2': { '1': true, '2': false, '3': true },
-                '3': { '1': false, '2': true, '3': true }
-            };
-        }
-        
-        this.saveData();
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 }
 
-// Initialize system after DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing system...');
+// Inicializar o sistema quando o DOM estiver carregado
+let zenttry;
+
+document.addEventListener('DOMContentLoaded', () => {
+    zenttry = new ZenttrySystem();
     
-    // Clear any existing user session for testing
-    localStorage.removeItem('currentUser');
-    
-    window.system = new AccessControlSystem();
-    system.initializeSampleData();
+    // Adicionar atributos data-action aos itens do sidebar
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    sidebarItems.forEach((item, index) => {
+        const actions = ['inicio', 'people', 'labs', 'logs', 'access', 'logout'];
+        if (actions[index]) {
+            item.setAttribute('data-action', actions[index]);
+        }
+    });
 });
+
+// Adicionar estilos para notificações
+const notificationStyles = `
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification-success {
+        background: #22c58f;
+    }
+    
+    .notification-error {
+        background: #dc3545;
+    }
+    
+    .notification-info {
+        background: #17a2b8;
+    }
+`;
+
+// Injetar estilos das notificações
+const styleSheet = document.createElement('style');
+styleSheet.textContent = notificationStyles;
+document.head.appendChild(styleSheet);

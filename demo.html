@@ -3,126 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demonstração - Sistema de Controle de Acesso</title>
+    <title>Zenttry - Demonstração</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         .demo-container {
-            max-width: 800px;
-            margin: 50px auto;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            background: white;
+            padding-top: 120px;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         
-        .demo-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .demo-section h2 {
+            color: #22c58f;
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
         }
         
-        .demo-header h1 {
-            color: #10b981;
-            margin-bottom: 15px;
-        }
-        
-        .demo-features {
+        .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-top: 20px;
         }
         
         .feature-card {
             background: #f8f9fa;
-            padding: 20px;
+            border: 2px solid #e1e5e9;
             border-radius: 15px;
-            border-left: 4px solid #10b981;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
         
-        .feature-card h3 {
-            color: #10b981;
+        .feature-card:hover {
+            border-color: #22c58f;
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h4 {
+            color: #22c58f;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .demo-actions {
-            text-align: center;
+        .demo-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
         
-        .demo-actions .btn {
-            margin: 10px;
+        .tech-stack {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
         
-        .demo-screenshots {
-            margin-top: 40px;
-            text-align: center;
+        .tech-badge {
+            background: linear-gradient(135deg, #22c58f 0%, #1ea085 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
         
         .screenshot {
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .screenshot img {
             max-width: 100%;
             height: auto;
-            border-radius: 10px;
-            margin: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">Z</div>
+                <span class="logo-text">Zenttry</span>
+            </div>
+            <div class="nav-tagline">Sistema de Controle de Acesso</div>
+            <div style="display: flex; gap: 15px;">
+                <a href="index.html" class="btn btn-primary">Acessar Sistema</a>
+                <a href="https://github.com/millenyrachel/zenttry" class="btn btn-secondary" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="demo-container">
-        <div class="demo-header">
-            <h1>Zenttry - Sistema de Controle de Acesso</h1>
-            <p>Uma solução completa e moderna para gerenciar acessos em laboratórios</p>
+        <div class="demo-section">
+            <h1 style="color: #22c58f; text-align: center; margin-bottom: 30px;">
+                🚀 Zenttry - Demonstração
+            </h1>
+            <p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 30px;">
+                Um sistema completo e moderno de controle de acesso desenvolvido com tecnologias web atuais
+            </p>
+            
+            <div class="demo-buttons" style="justify-content: center;">
+                <a href="index.html" class="btn btn-primary">🚀 Testar Sistema</a>
+                <a href="https://github.com/millenyrachel/zenttry" class="btn btn-secondary" target="_blank">📚 Ver Código</a>
+            </div>
         </div>
 
-        <div class="demo-features">
-            <div class="feature-card">
-                <h3>👥 Gerenciamento de Pessoas</h3>
-                <p>Cadastre, edite e gerencie pessoas com acesso aos LABs. Defina permissões específicas para cada usuário.</p>
+        <div class="demo-section">
+            <h2>✨ Principais Funcionalidades</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🏠 Página Inicial Interativa</h4>
+                    <p>Visão geral do sistema com estatísticas em tempo real, gráficos de acesso e ações rápidas para as principais funcionalidades.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>👥 Gerenciamento de Pessoas</h4>
+                    <p>CRUD completo para usuários do sistema, incluindo busca, filtros e exportação para CSV.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🏢 Gerenciamento de LABs</h4>
+                    <p>Configuração de laboratórios com localização, capacidade, equipamentos e status.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🔑 Controle de Acesso</h4>
+                    <p>Sistema de permissões granular para controlar quem pode acessar cada laboratório.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>📋 Logs de Acesso</h4>
+                    <p>Histórico completo de todas as tentativas de acesso com filtros avançados.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🎨 Interface Moderna</h4>
+                    <p>Design responsivo com paleta de cores personalizada (#22c58f) e animações suaves.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🛠️ Tecnologias Utilizadas</h2>
+            <div class="tech-stack">
+                <span class="tech-badge">HTML5</span>
+                <span class="tech-badge">CSS3</span>
+                <span class="tech-badge">JavaScript ES6+</span>
+                <span class="tech-badge">CSS Grid</span>
+                <span class="tech-badge">Flexbox</span>
+                <span class="tech-badge">LocalStorage</span>
+                <span class="tech-badge">Async/Await</span>
+                <span class="tech-badge">Classes ES6</span>
             </div>
             
-            <div class="feature-card">
-                <h3>🏢 Gerenciamento de LABs</h3>
-                <p>Crie e configure LABs com suas respectivas portas e fechaduras. Organize seu espaço de trabalho.</p>
+            <div style="margin-top: 30px;">
+                <h3>🎯 Características Técnicas</h3>
+                <ul style="color: #666; line-height: 1.8;">
+                    <li><strong>Arquitetura Modular:</strong> Código organizado em classes ES6 com responsabilidades bem definidas</li>
+                    <li><strong>Persistência Local:</strong> Dados salvos no localStorage do navegador</li>
+                    <li><strong>Responsividade:</strong> Interface adaptável para desktop, tablet e mobile</li>
+                    <li><strong>Performance:</strong> Otimizado com lazy loading e renderização eficiente</li>
+                    <li><strong>Acessibilidade:</strong> Suporte a navegação por teclado e leitores de tela</li>
+                </ul>
             </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🚀 Como Executar</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📦 NPM (Recomendado)</h4>
+                    <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;">
+npm install
+npm run dev</pre>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🌐 Live Server</h4>
+                    <p>Instale a extensão "Live Server" no VS Code e clique com botão direito no index.html</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>📁 Direto</h4>
+                    <p>Abra o index.html diretamente no navegador (algumas funcionalidades podem não funcionar)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔐 Credenciais de Teste</h2>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem;">
+                    <strong>Usuário:</strong> <code>admin</code><br>
+                    <strong>Senha:</strong> <code>admin123</code>
+                </p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📱 Funcionalidades Avançadas</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>⌨️ Atalhos de Teclado</h4>
+                    <ul style="color: #666; margin: 0; padding-left: 20px;">
+                        <li><strong>Ctrl + K:</strong> Busca rápida</li>
+                        <li><strong>ESC:</strong> Fechar modais</li>
+                        <li><strong>Enter:</strong> Submeter formulários</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🔔 Sistema de Notificações</h4>
+                    <p>Feedback visual para todas as ações do usuário com notificações elegantes e temporárias.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>📊 Gráficos Interativos</h4>
+                    <p>Visualização de dados de acesso com gráficos de barras responsivos e legendas informativas.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🔍 Filtros e Busca</h4>
+                    <p>Sistema de filtros avançados para pessoas, logs e laboratórios com busca em tempo real.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎨 Personalização</h2>
+            <p>O sistema é altamente personalizável através de variáveis CSS e configurações JavaScript:</p>
             
-            <div class="feature-card">
-                <h3>🔑 Controle de Acesso</h3>
-                <p>Sistema inteligente que permite ou nega entrada baseado em permissões e autenticação.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🎨 Cores</h4>
+                    <p>Paleta de cores personalizável através de variáveis CSS no arquivo styles.css</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>📱 Layout</h4>
+                    <p>Grid system flexível que se adapta a diferentes tamanhos de tela</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🔧 Configurações</h4>
+                    <p>Dados padrão e configurações facilmente editáveis no código</p>
+                </div>
             </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📈 Roadmap Futuro</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🔐 Autenticação Avançada</h4>
+                    <p>Múltiplos usuários, níveis de acesso e integração com sistemas externos</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>💾 Banco de Dados</h4>
+                    <p>Sincronização com bancos de dados reais e backup automático</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>📊 Relatórios</h4>
+                    <p>Relatórios avançados, exportação em múltiplos formatos e dashboards personalizáveis</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>🔌 API REST</h4>
+                    <p>API completa para integração com outros sistemas e aplicações</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section" style="text-align: center;">
+            <h2>🚀 Pronto para Começar?</h2>
+            <p style="font-size: 1.2rem; color: #666; margin-bottom: 30px;">
+                Teste o sistema agora mesmo e descubra todas as funcionalidades!
+            </p>
             
-            <div class="feature-card">
-                <h3>📊 Logs e Relatórios</h3>
-                <p>Registre e visualize todos os acessos com filtros avançados e histórico completo.</p>
+            <div class="demo-buttons" style="justify-content: center;">
+                <a href="index.html" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 30px;">
+                    🚀 Acessar Sistema
+                </a>
+                <a href="https://github.com/millenyrachel/zenttry" class="btn btn-secondary" target="_blank" style="font-size: 1.2rem; padding: 15px 30px;">
+                    📚 Ver no GitHub
+                </a>
             </div>
-        </div>
-
-        <div class="demo-actions">
-            <h3>🚀 Experimente o Sistema</h3>
-            <p>Clique no botão abaixo para acessar o sistema completo:</p>
-            <a href="index.html" class="btn btn-primary">Acessar Sistema</a>
-            <a href="README.md" class="btn btn-secondary">Ver Documentação</a>
-        </div>
-
-        <div class="demo-screenshots">
-            <h3>📱 Interface Responsiva</h3>
-            <p>O sistema funciona perfeitamente em todos os dispositivos</p>
-            <div style="margin: 20px 0;">
-                <strong>Credenciais de Acesso:</strong><br>
-                <strong>Usuário:</strong> admin<br>
-                <strong>Senha:</strong> admin123
-            </div>
-        </div>
-
-        <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
-            <h3>💡 Como Funciona</h3>
-            <ol style="text-align: left; line-height: 1.8;">
-                <li><strong>Login:</strong> Acesse com as credenciais fornecidas</li>
-                <li><strong>Dashboard:</strong> Visualize os 4 módulos principais</li>
-                <li><strong>Gerenciar Pessoas:</strong> Cadastre usuários e defina permissões</li>
-                <li><strong>Gerenciar LABs:</strong> Configure laboratórios e portas</li>
-                <li><strong>Controle de Acesso:</strong> Teste o sistema em tempo real</li>
-                <li><strong>Logs:</strong> Acompanhe todos os acessos e tentativas</li>
-            </ol>
         </div>
     </div>
+
+    <script>
+        // Adicionar efeitos de scroll suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Adicionar animações de entrada
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .demo-section').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>

@@ -14,7 +14,7 @@
                 <span class="logo-text">Zenttry</span>
             </div>
             <div class="nav-tagline">Sistema de Controle de Acesso</div>
-            <button class="sidebar-toggle" onclick="system.toggleSidebar()">
+            <button class="sidebar-toggle">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -30,29 +30,29 @@
             </div>
         </div>
         <nav class="sidebar-nav">
-            <a href="#" class="sidebar-item active" onclick="system.showDashboard()">
-                <i class="icon">📊</i>
-                <span>Dashboard</span>
+            <a href="#" class="sidebar-item active" data-action="inicio">
+                <i class="icon">🏠</i>
+                <span>Início</span>
             </a>
-            <a href="#" class="sidebar-item" onclick="system.showPeopleManagement()">
+            <a href="#" class="sidebar-item" data-action="people">
                 <i class="icon">👥</i>
                 <span>Gerenciar Pessoas</span>
             </a>
-            <a href="#" class="sidebar-item" onclick="system.showLabManagement()">
+            <a href="#" class="sidebar-item" data-action="labs">
                 <i class="icon">🏢</i>
                 <span>Gerenciar LABs</span>
             </a>
-            <a href="#" class="sidebar-item" onclick="system.showAccessLogs()">
+            <a href="#" class="sidebar-item" data-action="logs">
                 <i class="icon">📋</i>
                 <span>Logs de Acesso</span>
             </a>
-            <a href="#" class="sidebar-item" onclick="system.showAccessControl()">
+            <a href="#" class="sidebar-item" data-action="access">
                 <i class="icon">🔑</i>
                 <span>Controle de Acesso</span>
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="#" class="sidebar-item" onclick="system.logout()">
+            <a href="#" class="sidebar-item" data-action="logout">
                 <i class="icon">🚪</i>
                 <span>Sair</span>
             </a>

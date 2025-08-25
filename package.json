@@ -1,0 +1,33 @@
+{
+  "name": "zenttry",
+  "version": "1.0.0",
+  "description": "Um sistema completo e moderno de controle de acesso desenvolvido em HTML, CSS e JavaScript para gerenciar pessoas, LABs e permissões de acesso.",
+  "main": "script.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server .",
+    "build": "echo 'Build completed'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "controle-acesso",
+    "sistema",
+    "javascript",
+    "html",
+    "css"
+  ],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/millenyrachel/zenttry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/millenyrachel/zenttry/issues"
+  },
+  "homepage": "https://github.com/millenyrachel/zenttry#readme",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

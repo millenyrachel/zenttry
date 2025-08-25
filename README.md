@@ -1,148 +1,189 @@
-# 🚀 Zenttry - Sistema de Controle de Acesso para LABs
+# 🚀 Zenttry - Sistema de Controle de Acesso
 
-Um sistema completo e moderno de controle de acesso desenvolvido em HTML, CSS e JavaScript para gerenciar pessoas, LABs e permissões de acesso.
+Um sistema completo e moderno de controle de acesso desenvolvido em **HTML**, **CSS** e **JavaScript ES6+** para gerenciar pessoas, LABs e permissões de acesso.
 
-## ✨ Funcionalidades
+## ✨ Características
 
-### 👥 Gerenciamento de Pessoas
-- **Criar, editar e excluir pessoas**
-- **Definir acessos** às portas de cada LAB
-- Cadastro com nome, documento e senha/PIN
-
-### 🏢 Gerenciamento de LABs
-- **Criar, editar e excluir LABs**
-- **Associar portas/fechaduras** a cada LAB
-- **Visualizar logs de acesso** de cada LAB
-
-### 🔑 Controle de Acesso
-- **Permitir ou negar entrada** com base nas permissões
-- **Registrar logs de acesso** (quem entrou, quando e em qual LAB)
-- Sistema de autenticação por senha/PIN
-
-### 👨‍💼 Administração
-- **Apenas usuários autorizados** podem gerenciar o sistema
-- Interface intuitiva e responsiva
-- Dados persistidos no localStorage
-
-## 🚀 Como Usar
-
-### 1. Acesso ao Sistema
-- **Usuário:** `admin`
-- **Senha:** `admin123`
-
-### 2. Dashboard Principal
-Após o login, você terá acesso a 4 módulos principais:
-
-#### 👥 Gerenciar Pessoas
-- Visualizar lista de pessoas cadastradas
-- Adicionar novas pessoas
-- Editar informações existentes
-- Excluir pessoas
-- Gerenciar permissões de acesso por LAB
-
-#### 🏢 Gerenciar LABs
-- Visualizar lista de LABs cadastrados
-- Adicionar novos LABs
-- Editar informações existentes
-- Excluir LABs
-- Visualizar logs de acesso específicos
-
-#### 📊 Logs de Acesso
-- Visualizar todos os registros de acesso
-- Filtrar por pessoa, data e status
-- Histórico completo de tentativas de acesso
-
-#### 🔑 Controle de Acesso
-- Testar o sistema em tempo real
-- Simular tentativas de acesso
-- Verificar permissões e autenticação
+- **Interface Moderna**: Design responsivo com paleta de cores personalizada (#22c58f)
+- **JavaScript ES6+**: Código moderno e organizado usando classes e async/await
+- **Página Inicial Interativa**: Estatísticas em tempo real e gráficos de acesso
+- **Gerenciamento de Pessoas**: CRUD completo para usuários do sistema
+- **Gerenciamento de LABs**: Configuração de laboratórios e equipamentos
+- **Controle de Acesso**: Sistema de permissões granular
+- **Logs de Acesso**: Histórico completo de todas as tentativas de acesso
+- **Persistência Local**: Dados salvos no localStorage do navegador
+- **Notificações**: Sistema de alertas visuais para feedback do usuário
+- **Atalhos de Teclado**: Navegação rápida com Ctrl+K e ESC
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **HTML5** - Estrutura semântica
-- **CSS3** - Estilos modernos e responsivos com Glass Morphism
-- **JavaScript ES6+** - Lógica de negócio orientada a objetos
-- **LocalStorage** - Persistência de dados
-- **CSS Grid & Flexbox** - Layout responsivo
-- **Fontes Modernas** - Inter e Poppins para tipografia elegante
+- **HTML5**: Estrutura semântica e acessível
+- **CSS3**: Estilos modernos com CSS Grid, Flexbox e animações
+- **JavaScript ES6+**: Classes, módulos, async/await, localStorage
+- **Fontes**: Inter, Poppins, Roboto, Playfair Display, Montserrat
 
-## 📱 Responsividade
+## 🚀 Como Executar
 
-O sistema é totalmente responsivo e funciona em:
-- Desktop
-- Tablet
-- Smartphone
+### Opção 1: Servidor Local (Recomendado)
+```bash
+# Instalar dependências
+npm install
 
-## 🔧 Estrutura do Projeto
+# Iniciar servidor de desenvolvimento
+npm run dev
+
+# Ou usar serve
+npm start
+```
+
+### Opção 2: Abrir Diretamente
+```bash
+# Simplesmente abrir o index.html no navegador
+# (Algumas funcionalidades podem não funcionar devido a restrições CORS)
+```
+
+### Opção 3: Live Server (VS Code)
+- Instale a extensão "Live Server" no VS Code
+- Clique com botão direito no `index.html`
+- Selecione "Open with Live Server"
+
+## 🔐 Credenciais de Acesso
+
+- **Usuário**: `admin`
+- **Senha**: `admin123`
+
+## 📱 Funcionalidades
+
+### 🏠 Página Inicial
+- Visão geral do sistema
+- Estatísticas em tempo real
+- Gráfico de acessos dos últimos 7 dias
+- Ações rápidas para principais funcionalidades
+
+### 👥 Gerenciar Pessoas
+- Lista de pessoas cadastradas
+- Adicionar novas pessoas
+- Editar informações existentes
+- Excluir pessoas
+- Busca e filtros
+- Exportação para CSV
+
+### 🏢 Gerenciar LABs
+- Lista de laboratórios
+- Configuração de localização
+- Capacidade e equipamentos
+- Status ativo/inativo
+
+### 📋 Logs de Acesso
+- Histórico completo de acessos
+- Filtros por status, data e pessoa
+- Detalhes de cada tentativa
+
+### 🔑 Controle de Acesso
+- Configuração de permissões
+- Toggles para permitir/negar acesso
+- Controle granular por pessoa
+
+## 🎨 Paleta de Cores
+
+- **Cor Principal**: `#22c58f` (Verde-azulado)
+- **Cor Secundária**: `#1ea085` (Verde mais escuro)
+- **Cor Terciária**: `#1a8f7a` (Verde ainda mais escuro)
+- **Sombras**: `rgba(34, 197, 143, 0.3)` (Com transparência)
+
+## ⌨️ Atalhos de Teclado
+
+- **Ctrl + K**: Busca rápida
+- **ESC**: Fechar modais e sidebar
+- **Enter**: Submeter formulários
+
+## 📁 Estrutura do Projeto
 
 ```
+zenttry/
 ├── index.html          # Página principal
 ├── styles.css          # Estilos CSS
-├── script.js           # Lógica JavaScript
-└── README.md           # Documentação
+├── script.js           # Lógica JavaScript principal
+├── package.json        # Configurações do projeto
+├── README.md           # Documentação
+└── demo.html           # Página de demonstração
 ```
 
-## 📊 Dados de Exemplo
+## 🔧 Configuração
 
-O sistema vem com dados de exemplo pré-cadastrados:
+### Personalizar Cores
+As cores podem ser facilmente alteradas editando as variáveis CSS no arquivo `styles.css`:
 
-### Pessoas
-- João Silva (123.456.789-00) - Senha: 1234
-- Maria Santos (987.654.321-00) - Senha: 5678
-- Pedro Costa (456.789.123-00) - Senha: 9012
+```css
+/* Exemplo de personalização */
+:root {
+    --primary-color: #22c58f;
+    --secondary-color: #1ea085;
+    --accent-color: #1a8f7a;
+}
+```
 
-### LABs
-- LAB de Informática (Porta A-101)
-- LAB de Eletrônica (Porta B-205)
-- LAB de Mecatrônica (Porta C-310)
+### Adicionar Novos LABs
+```javascript
+// No console do navegador
+zenttry.labs.push({
+    id: Date.now(),
+    name: 'Novo LAB',
+    location: 'Localização',
+    capacity: 25,
+    equipment: ['Equipamento 1', 'Equipamento 2'],
+    status: 'active',
+    createdAt: new Date().toISOString()
+});
+zenttry.saveData('labs');
+```
 
-### Permissões
-- João: Acesso aos LABs 1 e 2
-- Maria: Acesso aos LABs 1 e 3
-- Pedro: Acesso aos LABs 2 e 3
+## 🚧 Funcionalidades Futuras
 
-## 🚀 Instalação e Uso
+- [ ] Autenticação com múltiplos usuários
+- [ ] Sincronização com banco de dados
+- [ ] Relatórios avançados
+- [ ] Integração com sistemas de controle de acesso físicos
+- [ ] API REST para integrações
+- [ ] Sistema de backup e restauração
+- [ ] Logs em tempo real via WebSocket
 
-1. **Baixe os arquivos** para uma pasta
-2. **Abra o `index.html`** em um navegador moderno
-3. **Faça login** com as credenciais: admin / admin123
-4. **Explore as funcionalidades** do sistema
+## 🐛 Solução de Problemas
 
-## 🔒 Segurança
+### Dados não persistem
+- Verifique se o localStorage está habilitado no navegador
+- Limpe o cache e cookies se necessário
 
-- **Autenticação obrigatória** para acesso ao sistema
-- **Validação de permissões** antes de conceder acesso
-- **Logs detalhados** de todas as tentativas de acesso
-- **Senhas criptografadas** (em produção, usar hash)
+### Interface não carrega
+- Verifique o console do navegador para erros JavaScript
+- Certifique-se de que todos os arquivos estão na mesma pasta
 
-## 📈 Funcionalidades Futuras
-
-- [ ] Integração com banco de dados
-- [ ] Sistema de usuários com diferentes níveis de acesso
-- [ ] Relatórios e estatísticas
-- [ ] Notificações em tempo real
-- [ ] API REST para integração
-- [ ] Sistema de backup automático
-
-## 🤝 Contribuição
-
-Para contribuir com o projeto:
-1. Faça um fork do repositório
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
+### Funcionalidades não funcionam
+- Verifique se está logado como admin
+- Recarregue a página e tente novamente
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+Este projeto está sob a licença ISC. Veja o arquivo `LICENSE` para mais detalhes.
+
+## 🤝 Contribuição
+
+Contribuições são bem-vindas! Por favor:
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
 ## 📞 Suporte
 
-Para dúvidas ou suporte:
-- Abra uma issue no repositório
-- Entre em contato com a equipe de desenvolvimento
+Se você encontrar algum problema ou tiver dúvidas:
+
+- Abra uma issue no GitHub
+- Verifique a documentação
+- Consulte o console do navegador para erros
 
 ---
 
-**Desenvolvido com ❤️ pela Zenttry para controle de acesso em laboratórios**
+**Desenvolvido com ❤️ usando tecnologias web modernas**
